@@ -2,91 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Chat Widget</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        body {
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: transparent;
-            overflow: hidden;
-        }
-
-        /* Chat Widget Button */
-        #chat-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            z-index: 1000;
-        }
-
-        #chat-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
-        }
-
-        #chat-button.hidden {
-            display: none;
         }
 
         /* Chat Container */
         #chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 380px;
-            height: 600px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            display: none;
+            display: flex;
             flex-direction: column;
             overflow: hidden;
-            z-index: 1000;
-            animation: slideUp 0.3s ease;
-        }
-
-        #chat-container.active {
-            display: flex;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         /* Chat Header */
         #chat-header {
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
-            padding: 20px;
+            padding: 16px 20px;
+            padding-top: max(16px, env(safe-area-inset-top));
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
+            min-height: 72px;
         }
 
         #chat-header-content {
@@ -104,6 +62,7 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            flex-shrink: 0;
         }
 
         #chat-title {
@@ -126,15 +85,16 @@
             background: none;
             border: none;
             color: white;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             transition: background 0.2s;
+            flex-shrink: 0;
         }
 
         #close-button:hover {
@@ -152,6 +112,7 @@
             flex-direction: column;
             gap: 16px;
             min-height: 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         #chat-messages::-webkit-scrollbar {
@@ -257,12 +218,6 @@
             margin-left: auto;
         }
 
-        .message-time {
-            font-size: 11px;
-            opacity: 0.6;
-            margin-top: 4px;
-        }
-
         /* Typing Indicator */
         .typing-indicator {
             display: none;
@@ -304,7 +259,8 @@
 
         /* Chat Input */
         #chat-input-container {
-            padding: 16px;
+            padding: 16px 20px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
             background: white;
             border-top: 1px solid #e2e8f0;
             display: flex;
@@ -317,7 +273,7 @@
             padding: 12px 16px;
             border: 1px solid #e2e8f0;
             border-radius: 24px;
-            font-size: 14px;
+            font-size: 16px;
             outline: none;
             transition: border-color 0.2s;
             font-family: inherit;
@@ -352,63 +308,18 @@
             cursor: not-allowed;
         }
 
-        /* Mobile Responsive - KEYBOARD FIX */
+        /* Mobile optimizations */
         @media (max-width: 768px) {
-            html {
-                height: 100%;
-                overflow: hidden;
-            }
-
-            body {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            #chat-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                bottom: auto;
-                right: auto;
-                border-radius: 0;
-                display: flex;
-                flex-direction: column;
-            }
-
-            #chat-header {
-                padding: 16px;
-                padding-top: max(16px, env(safe-area-inset-top));
-                flex-shrink: 0;
-            }
-
             #chat-messages {
-                flex: 1;
                 padding: 16px;
-                padding-bottom: 8px;
-                min-height: 0;
-                overflow-y: auto;
-                overflow-x: hidden;
-                -webkit-overflow-scrolling: touch;
             }
 
             #chat-input-container {
-                position: relative;
                 padding: 12px 16px;
                 padding-bottom: max(12px, env(safe-area-inset-bottom));
-                background: white;
-                border-top: 1px solid #e2e8f0;
-                flex-shrink: 0;
             }
 
             #chat-input {
-                font-size: 16px; /* Prevents zoom on iOS */
                 padding: 10px 14px;
             }
 
@@ -416,34 +327,10 @@
                 width: 40px;
                 height: 40px;
             }
-
-            #chat-button {
-                width: 56px;
-                height: 56px;
-                bottom: 16px;
-                right: 16px;
-            }
-        }
-
-        /* Extra small screens */
-        @media (max-width: 360px) {
-            #chat-input {
-                font-size: 14px;
-                padding: 8px 12px;
-            }
-
-            #send-button {
-                width: 36px;
-                height: 36px;
-                font-size: 16px;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Chat Button -->
-    <button id="chat-button" aria-label="Open chat">💬</button>
-
     <!-- Chat Container -->
     <div id="chat-container">
         <!-- Header -->
@@ -489,6 +376,8 @@
     </div>
 
     <script>
+        console.log('Chat widget loaded in iframe');
+
         // Configuration
         const CONFIG = {
             webhookUrl: 'https://n8n.srv1055646.hstgr.cloud/webhook/8019f7b8-3cfa-49b7-b3d3-41095fdd9087/chat',
@@ -506,7 +395,6 @@
         }
 
         // Elements
-        const chatButton = document.getElementById('chat-button');
         const chatContainer = document.getElementById('chat-container');
         const closeButton = document.getElementById('close-button');
         const chatMessages = document.getElementById('chat-messages');
@@ -514,46 +402,34 @@
         const sendButton = document.getElementById('send-button');
         const typingIndicator = document.getElementById('typing-indicator');
 
-        // Hide chat button since it will be triggered from Wix
-        chatButton.style.display = 'none';
-        
-        // Auto-open chat (since button is in Wix)
-        chatContainer.classList.add('active');
-
-        // Close chat
+        // Close chat - Send message to parent (Wix)
         closeButton.addEventListener('click', () => {
-            console.log('Close button clicked - sending message to parent');
+            console.log('Close button clicked - sending postMessage to parent');
             
-            // Send message to parent (Wix) to close the iframe
             try {
+                // Send to all possible parent origins
                 window.parent.postMessage({ action: 'closeChat' }, '*');
-                console.log('Message sent to parent window');
+                console.log('PostMessage sent to parent');
             } catch (error) {
-                console.error('Error sending message to parent:', error);
+                console.error('Error sending postMessage:', error);
             }
-            
-            // Also hide locally if not in iframe
-            chatContainer.classList.remove('active');
         });
 
-        // Send message - Multiple format attempts
+        // Send message
         async function sendMessage() {
             const message = chatInput.value.trim();
             if (!message) return;
 
-            // Add user message
             addMessage(message, 'user');
             chatInput.value = '';
             sendButton.disabled = true;
 
-            // Show typing indicator
             typingIndicator.classList.add('active');
             scrollToBottom();
 
             try {
-                console.log('Attempting to send message:', message);
+                console.log('Sending message:', message);
 
-                // Try POST with JSON body (most common)
                 const response = await fetch(CONFIG.webhookUrl, {
                     method: 'POST',
                     headers: {
@@ -586,7 +462,7 @@
                 
                 typingIndicator.classList.remove('active');
 
-                // Extract bot message from various possible response formats
+                // Extract bot message
                 let botMessage;
                 if (typeof data === 'string') {
                     botMessage = data;
@@ -609,8 +485,6 @@
             } catch (error) {
                 console.error('Error details:', error);
                 typingIndicator.classList.remove('active');
-                
-                // Show error with details
                 addMessage(`Connection error. Please check if the n8n workflow is active and accessible.`, 'bot');
             } finally {
                 sendButton.disabled = false;
@@ -630,7 +504,6 @@
             const content = document.createElement('div');
             content.className = 'message-content';
             
-            // Format the message (convert markdown to HTML)
             if (type === 'bot') {
                 content.innerHTML = formatBotMessage(text);
             } else {
@@ -640,36 +513,26 @@
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(content);
             
-            // Insert before typing indicator
             chatMessages.insertBefore(messageDiv, typingIndicator);
             scrollToBottom();
         }
 
-        // Format bot messages: convert markdown and links to styled HTML
+        // Format bot messages
         function formatBotMessage(text) {
             let formatted = text;
             
-            // Convert **bold** to <strong>
             formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            
-            // Convert *italic* to <em>
             formatted = formatted.replace(/\*(.+?)\*/g, '<em>$1</em>');
-            
-            // Convert line breaks
             formatted = formatted.replace(/\n/g, '<br>');
             
-            // Find URLs and convert to buttons with custom text
             const urlRegex = /(https?:\/\/[^\s]+)/g;
             formatted = formatted.replace(urlRegex, function(url) {
-                // Clean URL (remove trailing punctuation)
                 const cleanUrl = url.replace(/[.,;!?]$/, '');
                 
-                // Check if it's a cal.com link
                 if (cleanUrl.includes('cal.com')) {
                     return `<a href="${cleanUrl}" target="_blank" class="link-button">📅 Book a Call</a>`;
                 }
                 
-                // For other URLs, show domain name
                 const domain = cleanUrl.replace(/https?:\/\/(www\.)?/, '').split('/')[0];
                 return `<a href="${cleanUrl}" target="_blank" class="link-button">${domain}</a>`;
             });
@@ -679,15 +542,14 @@
 
         // Scroll to bottom
         function scrollToBottom() {
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 100);
+            });
         }
 
-        // Send button click
+        // Event listeners
         sendButton.addEventListener('click', sendMessage);
 
-        // Enter key to send
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -695,7 +557,6 @@
             }
         });
 
-        // Enable/disable send button based on input
         chatInput.addEventListener('input', () => {
             sendButton.disabled = !chatInput.value.trim();
         });
@@ -703,87 +564,21 @@
         // Initial state
         sendButton.disabled = true;
 
-        // Handle keyboard visibility on mobile using Visual Viewport API
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', handleViewportResize);
-            window.visualViewport.addEventListener('scroll', handleViewportScroll);
-        } else {
-            // Fallback for browsers that don't support visualViewport
-            window.addEventListener('resize', handleLegacyResize);
-        }
-
-        function handleViewportResize() {
-            const viewport = window.visualViewport;
-            const isMobile = window.innerWidth <= 768;
-            
-            if (!isMobile) return;
-
-            // Calculate the difference between viewport height and window height
-            const viewportHeight = viewport.height;
-            const windowHeight = window.innerHeight;
-            const keyboardHeight = windowHeight - viewportHeight;
-
-            if (keyboardHeight > 100) {
-                // Keyboard is open
-                chatContainer.style.height = viewportHeight + 'px';
-                chatContainer.style.transform = 'translateY(0)';
-                
-                // Scroll to show the input
-                setTimeout(() => {
-                    chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    scrollToBottom();
-                }, 100);
-            } else {
-                // Keyboard is closed
-                chatContainer.style.height = '100%';
-                chatContainer.style.transform = '';
-            }
-        }
-
-        function handleViewportScroll() {
-            const viewport = window.visualViewport;
-            const isMobile = window.innerWidth <= 768;
-            
-            if (!isMobile) return;
-
-            // Keep the chat container in the visible viewport
-            chatContainer.style.top = viewport.offsetTop + 'px';
-            chatContainer.style.left = viewport.offsetLeft + 'px';
-        }
-
-        function handleLegacyResize() {
-            const currentHeight = window.innerHeight;
-            const isMobile = window.innerWidth <= 768;
-            
-            if (!isMobile) return;
-
-            // Fallback behavior
-            if (currentHeight < window.screen.height * 0.75) {
-                // Keyboard likely open
-                setTimeout(() => {
-                    chatInput.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                    scrollToBottom();
-                }, 100);
-            }
-        }
-
-        // Enhanced input focus handling
+        // Handle input focus on mobile - scroll to keep input visible
         chatInput.addEventListener('focus', () => {
-            if (window.innerWidth <= 768) {
-                // On mobile, scroll to input when focused
-                setTimeout(() => {
-                    chatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    scrollToBottom();
-                }, 300);
-            }
+            setTimeout(() => {
+                chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
         });
 
-        // Focus input when chat opens (only on desktop)
-        setTimeout(() => {
-            if (window.innerWidth > 768) {
-                chatInput.focus();
-            }
-        }, 300);
+        // Notify parent that chat is ready
+        window.parent.postMessage({ action: 'chatReady' }, '*');
+        console.log('Chat ready message sent to parent');
+
+        // Auto-focus input on desktop only
+        if (window.innerWidth > 768) {
+            setTimeout(() => chatInput.focus(), 500);
+        }
     </script>
 </body>
 </html>

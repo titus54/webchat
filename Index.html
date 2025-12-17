@@ -12,22 +12,27 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
+        html {
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        body {
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            height: 100dvh;
             overflow: hidden;
-            position: fixed;
+            margin: 0;
+            padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: transparent;
         }
 
         /* Chat Container */
         #chat-container {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            height: 100dvh;
             background: white;
             display: flex;
             flex-direction: column;
@@ -266,6 +271,8 @@
             display: flex;
             gap: 12px;
             flex-shrink: 0;
+            min-height: 80px;
+            align-items: center;
         }
 
         #chat-input {
@@ -377,12 +384,23 @@
 
     <script>
         console.log('Chat widget loaded in iframe');
+        console.log('Window dimensions:', window.innerWidth, 'x', window.innerHeight);
+        console.log('Body dimensions:', document.body.clientWidth, 'x', document.body.clientHeight);
 
         // Configuration
         const CONFIG = {
             webhookUrl: 'https://n8n.srv1055646.hstgr.cloud/webhook/8019f7b8-3cfa-49b7-b3d3-41095fdd9087/chat',
             sessionKey: 'chatSessionId'
         };
+
+        // Debug: Log container sizes
+        window.addEventListener('load', () => {
+            const container = document.getElementById('chat-container');
+            const inputContainer = document.getElementById('chat-input-container');
+            console.log('Chat container height:', container.offsetHeight);
+            console.log('Input container visible:', inputContainer.offsetHeight > 0);
+            console.log('Input container position:', inputContainer.getBoundingClientRect());
+        });
 
         // Generate or get session ID
         function getSessionId() {

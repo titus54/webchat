@@ -33,7 +33,7 @@
             overflow: hidden;
         }
 
-        /* Chat Header - FIXED AT TOP */
+        /* Chat Header - FIXED AT TOP - MINIMAL */
         #chat-header {
             position: absolute;
             top: 0;
@@ -41,12 +41,12 @@
             right: 0;
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
-            padding: 16px 20px;
-            padding-top: max(16px, env(safe-area-inset-top));
+            padding: 12px 16px;
+            padding-top: max(12px, env(safe-area-inset-top));
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 72px;
+            height: 60px;
             z-index: 100;
         }
 
@@ -104,15 +104,15 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* Chat Messages - with extra padding at bottom */
+        /* Chat Messages - adjusted for new input padding */
         #chat-messages {
             position: absolute;
-            top: 72px;
+            top: 60px;
             left: 0;
             right: 0;
-            bottom: 120px; /* INCREASED from 80px - more space for input */
-            padding: 20px;
-            padding-bottom: 40px; /* Extra padding at bottom */
+            bottom: 120px; /* Space for input container */
+            padding: 16px;
+            padding-bottom: 20px;
             overflow-y: auto;
             overflow-x: hidden;
             background: #f5f5f5;
@@ -264,20 +264,21 @@
             }
         }
 
-        /* Chat Input - FIXED AT BOTTOM with more height */
+        /* Chat Input - FIXED AT BOTTOM with exact padding */
         #chat-input-container {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 20px;
-            padding-bottom: max(20px, env(safe-area-inset-bottom));
+            padding: 20px 16px; /* 20px top */
+            padding-bottom: 56px; /* 56px bottom */
             background: white;
             border-top: 1px solid #e2e8f0;
             display: flex;
             gap: 12px;
-            height: 120px; /* INCREASED from 80px */
-            align-items: center;
+            height: auto; /* Auto height based on content + padding */
+            min-height: 120px;
+            align-items: flex-start;
             z-index: 100;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
         }
@@ -323,25 +324,43 @@
             cursor: not-allowed;
         }
 
-        /* Mobile optimizations - EXTRA PADDING */
+        /* Mobile optimizations - 20px top, 56px bottom */
         @media (max-width: 768px) {
             #chat-header {
-                height: 64px;
-                padding: 12px 16px;
-                padding-top: max(12px, env(safe-area-inset-top));
+                height: 56px;
+                padding: 10px 16px;
+                padding-top: max(10px, env(safe-area-inset-top));
+            }
+
+            #chat-header-content {
+                gap: 8px;
+            }
+
+            #chat-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+
+            #chat-title h3 {
+                font-size: 15px;
+            }
+
+            #chat-title span {
+                font-size: 11px;
             }
 
             #chat-messages {
-                top: 64px;
-                bottom: 140px; /* INCREASED - even more space on mobile */
+                top: 56px;
+                bottom: 130px;
                 padding: 16px;
-                padding-bottom: 60px; /* EXTRA padding at bottom */
+                padding-bottom: 20px;
             }
 
             #chat-input-container {
-                height: 140px; /* INCREASED - taller on mobile */
-                padding: 24px 16px;
-                padding-bottom: max(24px, env(safe-area-inset-bottom));
+                padding: 20px 16px; /* 20px top */
+                padding-bottom: 56px; /* 56px bottom */
+                min-height: 130px;
             }
 
             #chat-input {
@@ -355,17 +374,18 @@
             }
         }
 
-        /* Extra small screens - EVEN MORE PADDING */
+        /* Extra small screens - same padding */
         @media (max-width: 360px) {
             #chat-messages {
-                bottom: 160px; /* INCREASED */
-                padding-bottom: 80px;
+                top: 56px;
+                bottom: 140px;
+                padding-bottom: 20px;
             }
 
             #chat-input-container {
-                height: 160px; /* INCREASED */
-                padding: 28px 16px;
-                padding-bottom: max(28px, env(safe-area-inset-bottom));
+                padding: 20px 16px; /* 20px top */
+                padding-bottom: 56px; /* 56px bottom */
+                min-height: 140px;
             }
         }
     </style>

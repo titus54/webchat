@@ -13,27 +13,22 @@
         }
 
         html {
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
-            width: 100%;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             overflow: hidden;
-            margin: 0;
-            padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: transparent;
+            background: white;
         }
 
         /* Chat Container */
         #chat-container {
             position: relative;
             width: 100%;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             background: white;
             overflow: hidden;
         }
@@ -109,14 +104,15 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* Chat Messages - with padding for fixed input */
+        /* Chat Messages - with extra padding at bottom */
         #chat-messages {
             position: absolute;
-            top: 72px; /* Header height */
+            top: 72px;
             left: 0;
             right: 0;
-            bottom: 80px; /* Input container height */
+            bottom: 120px; /* INCREASED from 80px - more space for input */
             padding: 20px;
+            padding-bottom: 40px; /* Extra padding at bottom */
             overflow-y: auto;
             overflow-x: hidden;
             background: #f5f5f5;
@@ -268,32 +264,34 @@
             }
         }
 
-        /* Chat Input - FIXED AT BOTTOM */
+        /* Chat Input - FIXED AT BOTTOM with more height */
         #chat-input-container {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 16px 20px;
-            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            padding: 20px;
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
             background: white;
             border-top: 1px solid #e2e8f0;
             display: flex;
             gap: 12px;
-            height: 80px;
+            height: 120px; /* INCREASED from 80px */
             align-items: center;
             z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
         }
 
         #chat-input {
             flex: 1;
-            padding: 12px 16px;
-            border: 1px solid #e2e8f0;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
             border-radius: 24px;
             font-size: 16px;
             outline: none;
             transition: border-color 0.2s;
             font-family: inherit;
+            background: white;
         }
 
         #chat-input:focus {
@@ -301,13 +299,13 @@
         }
 
         #send-button {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             border: none;
             border-radius: 50%;
             color: white;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -325,7 +323,7 @@
             cursor: not-allowed;
         }
 
-        /* Mobile optimizations */
+        /* Mobile optimizations - EXTRA PADDING */
         @media (max-width: 768px) {
             #chat-header {
                 height: 64px;
@@ -334,25 +332,40 @@
             }
 
             #chat-messages {
-                top: 64px; /* Adjusted header height */
-                bottom: 72px; /* Adjusted input height */
+                top: 64px;
+                bottom: 140px; /* INCREASED - even more space on mobile */
                 padding: 16px;
+                padding-bottom: 60px; /* EXTRA padding at bottom */
             }
 
             #chat-input-container {
-                height: 72px;
-                padding: 10px 16px;
-                padding-bottom: max(10px, env(safe-area-inset-bottom));
+                height: 140px; /* INCREASED - taller on mobile */
+                padding: 24px 16px;
+                padding-bottom: max(24px, env(safe-area-inset-bottom));
             }
 
             #chat-input {
-                padding: 10px 14px;
-                font-size: 16px; /* Prevent zoom on iOS */
+                padding: 12px 16px;
+                font-size: 16px;
             }
 
             #send-button {
-                width: 40px;
-                height: 40px;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        /* Extra small screens - EVEN MORE PADDING */
+        @media (max-width: 360px) {
+            #chat-messages {
+                bottom: 160px; /* INCREASED */
+                padding-bottom: 80px;
+            }
+
+            #chat-input-container {
+                height: 160px; /* INCREASED */
+                padding: 28px 16px;
+                padding-bottom: max(28px, env(safe-area-inset-bottom));
             }
         }
     </style>
@@ -403,24 +416,13 @@
     </div>
 
     <script>
-        console.log('Chat widget loaded in iframe');
-        console.log('Window dimensions:', window.innerWidth, 'x', window.innerHeight);
-        console.log('Body dimensions:', document.body.clientWidth, 'x', document.body.clientHeight);
+        console.log('Chat widget loaded');
 
         // Configuration
         const CONFIG = {
             webhookUrl: 'https://n8n.srv1055646.hstgr.cloud/webhook/8019f7b8-3cfa-49b7-b3d3-41095fdd9087/chat',
             sessionKey: 'chatSessionId'
         };
-
-        // Debug: Log container sizes
-        window.addEventListener('load', () => {
-            const container = document.getElementById('chat-container');
-            const inputContainer = document.getElementById('chat-input-container');
-            console.log('Chat container height:', container.offsetHeight);
-            console.log('Input container visible:', inputContainer.offsetHeight > 0);
-            console.log('Input container position:', inputContainer.getBoundingClientRect());
-        });
 
         // Generate or get session ID
         function getSessionId() {
@@ -440,16 +442,19 @@
         const sendButton = document.getElementById('send-button');
         const typingIndicator = document.getElementById('typing-indicator');
 
-        // Close chat - Send message to parent (Wix)
+        // Close chat - Send message to parent (if in iframe)
         closeButton.addEventListener('click', () => {
-            console.log('Close button clicked - sending postMessage to parent');
-            
-            try {
-                // Send to all possible parent origins
-                window.parent.postMessage({ action: 'closeChat' }, '*');
-                console.log('PostMessage sent to parent');
-            } catch (error) {
-                console.error('Error sending postMessage:', error);
+            if (window.parent !== window) {
+                console.log('In iframe - sending close message to parent');
+                try {
+                    window.parent.postMessage({ action: 'closeChat' }, '*');
+                } catch (error) {
+                    console.error('Error sending postMessage:', error);
+                }
+            } else {
+                console.log('Not in iframe - would close window');
+                // Could close window or hide container here
+                alert('Chat would close here');
             }
         });
 
@@ -466,8 +471,6 @@
             scrollToBottom();
 
             try {
-                console.log('Sending message:', message);
-
                 const response = await fetch(CONFIG.webhookUrl, {
                     method: 'POST',
                     headers: {
@@ -481,8 +484,6 @@
                     })
                 });
 
-                console.log('Response status:', response.status);
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -495,8 +496,6 @@
                 } else {
                     data = await response.text();
                 }
-
-                console.log('Response data:', data);
                 
                 typingIndicator.classList.remove('active');
 
@@ -521,9 +520,9 @@
                 addMessage(botMessage, 'bot');
 
             } catch (error) {
-                console.error('Error details:', error);
+                console.error('Error:', error);
                 typingIndicator.classList.remove('active');
-                addMessage(`Connection error. Please check if the n8n workflow is active and accessible.`, 'bot');
+                addMessage(`Connection error. Please check if the n8n workflow is active.`, 'bot');
             } finally {
                 sendButton.disabled = false;
                 chatInput.focus();
@@ -602,20 +601,9 @@
         // Initial state
         sendButton.disabled = true;
 
-        // Handle input focus on mobile - scroll to keep input visible
-        chatInput.addEventListener('focus', () => {
-            setTimeout(() => {
-                chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 300);
-        });
-
-        // Notify parent that chat is ready
-        window.parent.postMessage({ action: 'chatReady' }, '*');
-        console.log('Chat ready message sent to parent');
-
-        // Auto-focus input on desktop only
-        if (window.innerWidth > 768) {
-            setTimeout(() => chatInput.focus(), 500);
+        // Notify parent that chat is ready (if in iframe)
+        if (window.parent !== window) {
+            window.parent.postMessage({ action: 'chatReady' }, '*');
         }
     </script>
 </body>

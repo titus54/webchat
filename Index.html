@@ -120,6 +120,7 @@
             flex-direction: column;
             gap: 16px;
             -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth; /* Smooth scrolling */
         }
 
         #chat-messages::-webkit-scrollbar {
@@ -487,8 +488,15 @@
             chatInput.value = '';
             sendButton.disabled = true;
 
-            typingIndicator.classList.add('active');
+            // Scroll after user message
             scrollToBottom();
+
+            typingIndicator.classList.add('active');
+            
+            // Scroll to show typing indicator
+            setTimeout(() => {
+                scrollToBottom();
+            }, 100);
 
             try {
                 const response = await fetch(CONFIG.webhookUrl, {
@@ -538,6 +546,11 @@
                 }
                 
                 addMessage(botMessage, 'bot');
+                
+                // Force scroll after bot message
+                setTimeout(() => {
+                    scrollToBottom();
+                }, 100);
 
             } catch (error) {
                 console.error('Error:', error);
@@ -597,10 +610,20 @@
             return formatted;
         }
 
-        // Scroll to bottom
+        // Scroll to bottom - IMPROVED
         function scrollToBottom() {
             requestAnimationFrame(() => {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Double-check after a short delay (for images/content loading)
+                setTimeout(() => {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 100);
+                
+                // Triple-check for stubborn cases
+                setTimeout(() => {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 300);
             });
         }
 

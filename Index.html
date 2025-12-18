@@ -15,6 +15,8 @@
         html {
             height: 100%;
             overflow: hidden;
+            position: fixed;
+            width: 100%;
         }
 
         body {
@@ -22,49 +24,53 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: white;
+            position: fixed;
+            width: 100%;
         }
 
         /* Chat Container */
         #chat-container {
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             background: white;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Chat Header - FIXED AT TOP - MINIMAL */
+        /* Chat Header - FIXED AT TOP */
         #chat-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            position: relative;
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
-            padding: 12px 16px;
-            padding-top: max(12px, env(safe-area-inset-top));
+            padding: 10px 16px;
+            padding-top: max(10px, env(safe-area-inset-top));
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 60px;
+            min-height: 56px;
+            flex-shrink: 0;
             z-index: 100;
         }
 
         #chat-header-content {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
 
         #chat-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             flex-shrink: 0;
         }
 
@@ -74,13 +80,13 @@
         }
 
         #chat-title h3 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             margin-bottom: 2px;
         }
 
         #chat-title span {
-            font-size: 12px;
+            font-size: 11px;
             opacity: 0.9;
         }
 
@@ -104,13 +110,9 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* Chat Messages - adjusted for new input padding */
+        /* Chat Messages */
         #chat-messages {
-            position: absolute;
-            top: 60px;
-            left: 0;
-            right: 0;
-            bottom: 120px; /* Space for input container */
+            flex: 1;
             padding: 16px;
             padding-bottom: 20px;
             overflow-y: auto;
@@ -120,7 +122,8 @@
             flex-direction: column;
             gap: 16px;
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth; /* Smooth scrolling */
+            scroll-behavior: smooth;
+            min-height: 0;
         }
 
         #chat-messages::-webkit-scrollbar {
@@ -265,20 +268,16 @@
             }
         }
 
-        /* Chat Input - FIXED AT BOTTOM with exact padding */
+        /* Chat Input - FLEXIBLE */
         #chat-input-container {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px 16px; /* 20px top */
-            padding-bottom: 56px; /* 56px bottom */
+            position: relative;
+            padding: 20px 16px;
+            padding-bottom: 56px;
             background: white;
             border-top: 1px solid #e2e8f0;
             display: flex;
             gap: 12px;
-            height: auto; /* Auto height based on content + padding */
-            min-height: 120px;
+            flex-shrink: 0;
             align-items: flex-start;
             z-index: 100;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
@@ -286,7 +285,7 @@
 
         #chat-input {
             flex: 1;
-            padding: 14px 18px;
+            padding: 12px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 24px;
             font-size: 16px;
@@ -301,8 +300,8 @@
         }
 
         #send-button {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             border: none;
             border-radius: 50%;
@@ -323,71 +322,6 @@
         #send-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-        }
-
-        /* Mobile optimizations - 20px top, 56px bottom */
-        @media (max-width: 768px) {
-            #chat-header {
-                height: 56px;
-                padding: 10px 16px;
-                padding-top: max(10px, env(safe-area-inset-top));
-            }
-
-            #chat-header-content {
-                gap: 8px;
-            }
-
-            #chat-avatar {
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
-            }
-
-            #chat-title h3 {
-                font-size: 15px;
-            }
-
-            #chat-title span {
-                font-size: 11px;
-            }
-
-            #chat-messages {
-                top: 56px;
-                bottom: 130px;
-                padding: 16px;
-                padding-bottom: 20px;
-            }
-
-            #chat-input-container {
-                padding: 20px 16px; /* 20px top */
-                padding-bottom: 56px; /* 56px bottom */
-                min-height: 130px;
-            }
-
-            #chat-input {
-                padding: 12px 16px;
-                font-size: 16px;
-            }
-
-            #send-button {
-                width: 44px;
-                height: 44px;
-            }
-        }
-
-        /* Extra small screens - same padding */
-        @media (max-width: 360px) {
-            #chat-messages {
-                top: 56px;
-                bottom: 140px;
-                padding-bottom: 20px;
-            }
-
-            #chat-input-container {
-                padding: 20px 16px; /* 20px top */
-                padding-bottom: 56px; /* 56px bottom */
-                min-height: 140px;
-            }
         }
     </style>
 </head>
@@ -437,7 +371,8 @@
     </div>
 
     <script>
-        console.log('Chat widget loaded');
+        console.log('Chat widget loaded - Wix optimized version');
+        console.log('User agent:', navigator.userAgent);
 
         // Configuration
         const CONFIG = {
@@ -473,8 +408,7 @@
                     console.error('Error sending postMessage:', error);
                 }
             } else {
-                console.log('Not in iframe - would close window');
-                // Could close window or hide container here
+                console.log('Not in iframe');
                 alert('Chat would close here');
             }
         });
@@ -558,7 +492,6 @@
                 addMessage(`Connection error. Please check if the n8n workflow is active.`, 'bot');
             } finally {
                 sendButton.disabled = false;
-                chatInput.focus();
             }
         }
 
@@ -615,7 +548,7 @@
             requestAnimationFrame(() => {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
                 
-                // Double-check after a short delay (for images/content loading)
+                // Double-check after a short delay
                 setTimeout(() => {
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                 }, 100);
@@ -641,74 +574,22 @@
             sendButton.disabled = !chatInput.value.trim();
         });
 
-        // Trigger keyboard check when input is focused
+        // Input focus handling - keep it simple for iframe
         chatInput.addEventListener('focus', () => {
-            console.log('Input focused');
             setTimeout(() => {
-                if (window.visualViewport) {
-                    handleKeyboard();
-                }
-                chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                scrollToBottom();
             }, 300);
-        });
-
-        // Check keyboard state when input loses focus
-        chatInput.addEventListener('blur', () => {
-            console.log('Input blurred');
-            setTimeout(() => {
-                if (window.visualViewport) {
-                    handleKeyboard();
-                }
-            }, 100);
         });
 
         // Initial state
         sendButton.disabled = true;
 
-        // Handle keyboard visibility using Visual Viewport API
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', handleKeyboard);
-            window.visualViewport.addEventListener('scroll', handleKeyboard);
-        }
-
-        function handleKeyboard() {
-            const viewport = window.visualViewport;
-            const inputContainer = document.getElementById('chat-input-container');
-            const messagesContainer = document.getElementById('chat-messages');
-            
-            if (!viewport) return;
-
-            // Calculate keyboard height
-            const viewportHeight = viewport.height;
-            const windowHeight = window.innerHeight;
-            const keyboardHeight = windowHeight - viewportHeight;
-
-            if (keyboardHeight > 100) {
-                // Keyboard is open - position input at bottom of visible viewport
-                inputContainer.style.position = 'fixed';
-                inputContainer.style.bottom = '0px';
-                inputContainer.style.transform = `translateY(-${viewport.offsetTop}px)`;
-                
-                // Adjust messages to not overlap with input
-                const inputHeight = inputContainer.offsetHeight;
-                messagesContainer.style.bottom = inputHeight + 'px';
-                
-                console.log('Keyboard open - height:', keyboardHeight);
-            } else {
-                // Keyboard is closed - restore normal position
-                inputContainer.style.position = 'absolute';
-                inputContainer.style.bottom = '0';
-                inputContainer.style.transform = '';
-                messagesContainer.style.bottom = '130px';
-                
-                console.log('Keyboard closed');
-            }
-        }
-
         // Notify parent that chat is ready (if in iframe)
         if (window.parent !== window) {
             window.parent.postMessage({ action: 'chatReady' }, '*');
         }
+
+        console.log('Chat initialized successfully');
     </script>
 </body>
 </html>

@@ -618,8 +618,69 @@
             sendButton.disabled = !chatInput.value.trim();
         });
 
+        // Trigger keyboard check when input is focused
+        chatInput.addEventListener('focus', () => {
+            console.log('Input focused');
+            setTimeout(() => {
+                if (window.visualViewport) {
+                    handleKeyboard();
+                }
+                chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+        });
+
+        // Check keyboard state when input loses focus
+        chatInput.addEventListener('blur', () => {
+            console.log('Input blurred');
+            setTimeout(() => {
+                if (window.visualViewport) {
+                    handleKeyboard();
+                }
+            }, 100);
+        });
+
         // Initial state
         sendButton.disabled = true;
+
+        // Handle keyboard visibility using Visual Viewport API
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', handleKeyboard);
+            window.visualViewport.addEventListener('scroll', handleKeyboard);
+        }
+
+        function handleKeyboard() {
+            const viewport = window.visualViewport;
+            const inputContainer = document.getElementById('chat-input-container');
+            const messagesContainer = document.getElementById('chat-messages');
+            
+            if (!viewport) return;
+
+            // Calculate keyboard height
+            const viewportHeight = viewport.height;
+            const windowHeight = window.innerHeight;
+            const keyboardHeight = windowHeight - viewportHeight;
+
+            if (keyboardHeight > 100) {
+                // Keyboard is open - position input at bottom of visible viewport
+                inputContainer.style.position = 'fixed';
+                inputContainer.style.bottom = '0px';
+                inputContainer.style.transform = `translateY(-${viewport.offsetTop}px)`;
+                
+                // Adjust messages to not overlap with input
+                const inputHeight = inputContainer.offsetHeight;
+                messagesContainer.style.bottom = inputHeight + 'px';
+                
+                console.log('Keyboard open - height:', keyboardHeight);
+            } else {
+                // Keyboard is closed - restore normal position
+                inputContainer.style.position = 'absolute';
+                inputContainer.style.bottom = '0';
+                inputContainer.style.transform = '';
+                messagesContainer.style.bottom = '130px';
+                
+                console.log('Keyboard closed');
+            }
+        }
 
         // Notify parent that chat is ready (if in iframe)
         if (window.parent !== window) {
